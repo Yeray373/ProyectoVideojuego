@@ -7,6 +7,9 @@ private:
     sf::RenderWindow window;
     const float Ancho = 900.f;
     const float Alto = 600.f;
+    float frameTime = 0.1f;
+    int currentFrame = 0;
+    int numFrames = 4; // Número total de frames en la animación
 
 public:
     Pantalla();
@@ -20,6 +23,10 @@ public:
     void draw(sf::Shape &shape);
     void draw(sf::Drawable &drawable);
     void draw(sf::Text &text);
+    float getFrameTime() ;
+    int getCurrentFrame() ;
+    int getNumFrames() ;
+    void setCurrentFrame(int frame);
 };
 
 Pantalla::Pantalla()
@@ -67,6 +74,22 @@ void Pantalla::draw(sf::Drawable &drawable)
 void Pantalla::draw(sf::Text &text)
 {
     window.draw(text);
+}
+
+float Pantalla::getFrameTime()  {
+    return frameTime;
+}
+
+int Pantalla::getCurrentFrame()  {
+    return currentFrame;
+}
+
+int Pantalla::getNumFrames()  {
+    return numFrames;
+}
+
+void Pantalla::setCurrentFrame(int frame) {
+    currentFrame = frame % numFrames;
 }
 
 Pantalla::~Pantalla()

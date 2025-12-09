@@ -14,12 +14,10 @@ int main() {
     Pantalla gameWindow; // Inicializa la ventana del juego
     Background background("./assets/images/Background.jpg"); // Carga el fondo del juego
     Tablero tablero(7); // Crea un tablero con una pirámide de altura 7
-    Jugador jugador(     // Inicializa el jugador en la última casilla creada
-        tablero.casillas.front(), 
+    Jugador jugador(     // Inicializa el jugador en la primera casilla (vértice)
+        tablero.casillas[0][0], 
         "./assets/images/Oldhero.png"
-    );
-    
-    int casillaActual = tablero.casillas.size() - 1; // Empieza en la última
+    );   
 
     while (gameWindow.isOpen()) {
         sf::Event event;
@@ -28,33 +26,43 @@ int main() {
                 gameWindow.close();
             }
 
+            int filaActual = jugador.getCasillaActual().getFila();
+            int columnaActual = jugador.getCasillaActual().getColumna();
+
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Down) {
-                    int vecino = tablero.casillas[casillaActual].vecinoAbajo;
-                    if (vecino != -1) {
-                        casillaActual = vecino;
-                        jugador.MoverACasilla(tablero.casillas[casillaActual]);
+                if (!jugador.getEstaVivo()) {
+                    // Si el jugador está muerto, presionar cualquier tecla lo respawnea
+                    if (event.key.code == sf::Keyboard::Space) {
+                        jugador.respawn();
                     }
-                }
-                if (event.key.code == sf::Keyboard::Right) {
-                    int vecino = tablero.casillas[casillaActual].vecinoDerecha;
-                    if (vecino != -1) {
-                        casillaActual = vecino;
-                        jugador.MoverACasilla(tablero.casillas[casillaActual]);
+                } else {
+                    // Movimiento diagonal abajo-derecha (Down + Right)
+                    if (event.key.code == sf::Keyboard::Down && sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                        int filaDestino = filaActual + 1;
+                        int colDestino = columnaActual + 1;
+                        Casilla* nuevaCasilla = tablero.getCasilla(filaDestino, colDestino);
+                        jugador.intentarMover(nuevaCasilla, filaDestino, colDestino);
                     }
-                }
-                if (event.key.code == sf::Keyboard::Left) {
-                    int vecino = tablero.casillas[casillaActual].vecinoIzquierda;
-                    if (vecino != -1) {
-                        casillaActual = vecino;
-                        jugador.MoverACasilla(tablero.casillas[casillaActual]);
+                    // Movimiento diagonal abajo-izquierda (Down + Left)
+                    else if (event.key.code == sf::Keyboard::Down && sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                        int filaDestino = filaActual + 1;
+                        int colDestino = columnaActual;
+                        Casilla* nuevaCasilla = tablero.getCasilla(filaDestino, colDestino);
+                        jugador.intentarMover(nuevaCasilla, filaDestino, colDestino);
                     }
-                }
-                if (event.key.code == sf::Keyboard::Up) {
-                    int vecino = tablero.casillas[casillaActual].vecinoArriba;
-                    if (vecino != -1) {
-                        casillaActual = vecino;
-                        jugador.MoverACasilla(tablero.casillas[casillaActual]);
+                    // Movimiento diagonal arriba-derecha (Up + Right)
+                    else if (event.key.code == sf::Keyboard::Up && sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                        int filaDestino = filaActual - 1;
+                        int colDestino = columnaActual;
+                        Casilla* nuevaCasilla = tablero.getCasilla(filaDestino, colDestino);
+                        jugador.intentarMover(nuevaCasilla, filaDestino, colDestino);
+                    }
+                    // Movimiento diagonal arriba-izquierda (Up + Left)
+                    else if (event.key.code == sf::Keyboard::Up && sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                        int filaDestino = filaActual - 1;
+                        int colDestino = columnaActual - 1;
+                        Casilla* nuevaCasilla = tablero.getCasilla(filaDestino, colDestino);
+                        jugador.intentarMover(nuevaCasilla, filaDestino, colDestino);
                     }
                 }
             }

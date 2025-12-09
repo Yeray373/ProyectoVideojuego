@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include <Jugador.hpp>
 #include <Pantalla.hpp>
 
 class Casilla{
@@ -9,20 +8,18 @@ private:
     const float ancho_cubo = 64.f;
     const float profundidad_cubo = 32.f;
     const float alto_cubo = 32.f; 
+    int fila;
+    int columna;
 public:
     sf::ConvexShape tapa_cubo,izq_cubo,der_cubo;
     
-    // Índices de vecinos en la pirámide (-1 si no existe)
-    int vecinoArriba = -1;
-    int vecinoAbajo = -1;
-    int vecinoIzquierda = -1;
-    int vecinoDerecha = -1;
-    
     bool visitada = false;
+
     sf::Color colorOriginal = sf::Color::Blue;
     sf::Color colorVisitado = sf::Color::Yellow;
     
-    Casilla (float x, float y);
+    Casilla (float x, float y, int fila, int columna);
+
     void Dibujar(Pantalla &window){
         window.draw(tapa_cubo);
         window.draw(der_cubo);
@@ -39,9 +36,16 @@ public:
     sf::Vector2f getPosicion() {
         return tapa_cubo.getPoint(0);
     }
+    int getFila() const {
+        return fila;
+    }
+    int getColumna() const {
+        return columna;
+    }
+
 };
 
-Casilla::Casilla(float x, float y) {
+Casilla::Casilla(float x, float y, int fila, int columna) : fila(fila), columna(columna) {
     //Tapa
     tapa_cubo.setPointCount(4);
     tapa_cubo.setPoint(0, sf::Vector2f(x, y)); // Arriba

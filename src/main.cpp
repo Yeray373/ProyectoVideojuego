@@ -73,6 +73,7 @@ int main() {
         jugador.Dibujar(gameWindow);
         gameWindow.display();
         //Arthur estuvo aqui
+        // ok
         
     }
 

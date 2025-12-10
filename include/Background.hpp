@@ -15,7 +15,7 @@ Background::Background(const std::string& filePath)
 {
     if (!BackgroundImage.loadFromFile(filePath)) {}
     background.setTexture(BackgroundImage);
-    background.setScale(0.5f, 0.5f);
+    background.setScale(1.f, 1.f);
 }
 
 void Background::Dibujar(Pantalla &window)

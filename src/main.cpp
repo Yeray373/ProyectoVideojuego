@@ -12,11 +12,11 @@
 
 int main() {
     Pantalla gameWindow; // Inicializa la ventana del juego
-    Background background("./assets/images/Background.jpg"); // Carga el fondo del juego
+    Background background("./assets/images/Background.png"); // Carga el fondo del juego
     Tablero tablero(7); // Crea un tablero con una pirámide de altura 7
     Jugador jugador(     // Inicializa el jugador en la primera casilla (vértice)
         tablero.casillas[0][0], 
-        "./assets/images/Oldhero.png"
+        "./assets/images/cetiano.png"
     );   
 
     while (gameWindow.isOpen()) {

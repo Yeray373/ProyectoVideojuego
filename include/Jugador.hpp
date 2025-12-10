@@ -50,11 +50,11 @@ Jugador::Jugador(Casilla& casillaInicial, const std::string& filePath)
         // Error loading texture
     }
     JugadorSprite.setTexture(JugadorTexture);
-    JugadorSprite.setScale(4.f, 4.f);
+    JugadorSprite.setScale(0.8f, 0.8f);
     
     // Configurar las animaciones usando el constructor de Animacion
-    animaciones[AnimacionEstado::PARADO] = Animacion(17, 19, 1, 10, 15, 0.0f, true);  // 1 frame estático
-    animaciones[AnimacionEstado::SALTAR] = Animacion(49, 16, 3, 16, 18, 0.2f, false);  // 3 frames salto
+    animaciones[AnimacionEstado::PARADO] = Animacion(101, 5, 1, 74, 151, 0.0f, true);  // 1 frame estático
+    animaciones[AnimacionEstado::SALTAR] = Animacion(101, 6, 10, 74, 151, 0.1f, false);  // 3 frames salto
     animaciones[AnimacionEstado::CAER] = Animacion(97, 15, 4, 18, 29, 0.4f, false);    // 5 frames cayendo
     animaciones[AnimacionEstado::DESAPARECER] = Animacion(97, 70, 1, 19, 31, 5.0f, false); // Placeholder
     

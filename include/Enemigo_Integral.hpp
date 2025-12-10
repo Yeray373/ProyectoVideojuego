@@ -11,10 +11,19 @@ private:
 
 public:
     Enemigo_Integral(Casilla& casillaInicial, const std::string& filePath)
-        : Enemigo(casillaInicial, filePath) {
-        // Configuración específica de integral
-        tiempoEntreMovimientos = 1.0f;  // Se mueve más rápido
-    }
+        : Enemigo(casillaInicial) {
+            if(!EnemigoTexture.loadFromFile(filePath)) {
+            }
+            EnemigoSprite.setTexture(EnemigoTexture);
+            EnemigoSprite.setScale(0.8f, 0.8f);
+            animaciones[AnimacionEstado::PARADO] = Animacion(24, 0, 1, 95, 212, 0.0f, true);  // 1 frame estático
+            animaciones[AnimacionEstado::SALTAR] = Animacion(24, 0, 5, 95, 212, 0.2f, false);  // 3 frames salto
+            //animaciones[AnimacionEstado::CAER] = Animacion(27, 0, 3, 114, 150, 0.2f, true);  // 5 frames morir
+
+    // Establecer animación inicial
+            cambiarAnimacion(AnimacionEstado::PARADO);
+        }
+
     
     void actualizar(Tablero& tablero) override {
         if (!estaVivo || estaCayendo) return;
@@ -44,7 +53,7 @@ public:
                 // Si no puede moverse en esa dirección, cambiar patrón
                 moviendoAbajo = !moviendoAbajo;
             } else {
-                intentarMover(nuevaCasilla, filaDestino, colDestino);
+                MoverACasilla(*nuevaCasilla);
             }
             
             relojMovimiento.restart();

@@ -32,7 +32,7 @@ int main() {
     std::vector<std::unique_ptr<Enemigo>> enemigos;
     sf::Clock relojSpawn;
     float tiempoProximoSpawn = 2.0f + static_cast<float>(std::rand() % 4); // Entre 2-6 segundos
-    int maxEnemigos = 5; // Máximo de enemigos simultáneos
+    int maxEnemigos = 2; // Máximo de enemigos simultáneos
 
 
     while (gameWindow.isOpen()) {
@@ -102,7 +102,7 @@ int main() {
                     enemigos.push_back(std::make_unique<Enemigo_Profesor>(*casillaSpawn, "./assets/images/profesor.png"));
                 } else {
                     // Crear Enemigo_Integral (rápido, zigzag)
-                    enemigos.push_back(std::make_unique<Enemigo_Integral>(*casillaSpawn, "./assets/images/intenemy.png"));
+                    enemigos.push_back(std::make_unique<Enemigo_Integral>(*casillaSpawn, "./assets/images/intEnemy.png"));
                 }
             }
             

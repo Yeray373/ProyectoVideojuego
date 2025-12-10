@@ -16,7 +16,7 @@ protected:  // Cambiar a protected para que las clases hijas accedan
     bool estaCayendo = false;
     sf::Vector2f posicionCaida;  // Posición inicial hacia donde cae
     sf::Vector2f posicionActualCaida;  // Posición durante la caída
-    float velocidadCaida = 100.f;  // Píxeles por segundo
+    float velocidadCaida = 50.f;  // Píxeles por segundo
     sf::Clock relojCaida;
 
     AnimacionEstado estadoActual = AnimacionEstado::PARADO;
@@ -28,11 +28,11 @@ protected:  // Cambiar a protected para que las clases hijas accedan
     void actualizarAnimacion();
 
 public:
-    Enemigo(Casilla& casillaInicial, const std::string& filePath);
+    Enemigo(Casilla& casillaInicial);
     virtual ~Enemigo();
     
     // Métodos comunes
-    bool intentarMover(Casilla* nuevaCasilla, int filaDestino, int colDestino);
+
     void MoverACasilla(Casilla& nuevaCasilla);
     void morir();
     bool getEstaVivo() const { return estaVivo; }
@@ -43,27 +43,18 @@ public:
     virtual void actualizar(Tablero& tablero) = 0;
 };
 
-Enemigo::Enemigo(Casilla& casillaInicial, const std::string& filePath) 
-    : casillaActual(&casillaInicial)
-{
-    if (!EnemigoTexture.loadFromFile(filePath)) {
-        // Error loading texture
-    }
-    EnemigoSprite.setTexture(EnemigoTexture);
-    EnemigoSprite.setScale(0.8f, 0.8f);
+Enemigo::Enemigo(Casilla& casillaInicial) 
+    : casillaActual(&casillaInicial){
+}
     
     // Configurar las animaciones usando el constructor de Animacion
-    animaciones[AnimacionEstado::PARADO] = Animacion(0, 0, 1, 64, 64, 0.0f, true);  // 1 frame estático
-    animaciones[AnimacionEstado::SALTAR] = Animacion(0, 0, 3, 64, 64, 0.2f, false);  // 3 frames salto
-    animaciones[AnimacionEstado::CAER] = Animacion(64, 0, 5, 64, 64, 0.2f, false);  // 5 frames morir
+  
 
-    // Establecer animación inicial
-    cambiarAnimacion(AnimacionEstado::PARADO);
-}
 
 void Enemigo::MoverACasilla(Casilla& nuevaCasilla)
 {
     casillaActual = &nuevaCasilla;
+    posicionCaida = nuevaCasilla.getPosicion();
     cambiarAnimacion(AnimacionEstado::SALTAR);  // Activar animación de salto
 }
 
@@ -77,8 +68,8 @@ void Enemigo::Dibujar(Pantalla &window)
         float tiempocaida = relojCaida.getElapsedTime().asSeconds();
         float desplazamiento = velocidadCaida * tiempocaida;
 
-        posicionActualCaida.x = posicionCaida.x;
-        posicionActualCaida.y = posicionActualCaida.y + desplazamiento;
+        posicionActualCaida.x = posicionCaida.x*64.f;
+        posicionActualCaida.y = posicionCaida.y + desplazamiento;
 
         cubePos = posicionActualCaida;
     }else if (casillaActual){
@@ -121,11 +112,7 @@ void Enemigo::actualizarAnimacion()
         
         if (anim.haTerminado()) {
             if(estaVivo == false) {
-                // Enemigo desaparece al morir
-                estaCayendo = true;
-                posicionCaida = casillaActual->getPosicion();
-                posicionActualCaida = posicionCaida;
-                relojCaida.restart();
+                cambiarAnimacion(AnimacionEstado::CAER);
             }
             else {
                 cambiarAnimacion(AnimacionEstado::PARADO);
@@ -136,16 +123,7 @@ void Enemigo::actualizarAnimacion()
     }
 }
 
-bool Enemigo::intentarMover(Casilla* nuevaCasilla, int filaDestino, int colDestino)
-{
-    if (nuevaCasilla) {
-        MoverACasilla(*nuevaCasilla);
-        return true;
-    } else {
-        morir();
-        return false;
-    }
-}
+
 
 void Enemigo::morir()
 {

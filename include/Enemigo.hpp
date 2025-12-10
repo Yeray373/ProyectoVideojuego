@@ -2,9 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <map>
-#include "Casilla.hpp"
-#include "Animacion.hpp"
-#include "Pantalla.hpp"
+#include <Casilla.hpp>
+#include <Animacion.hpp>
+#include <Pantalla.hpp>
 
 class Enemigo {
 protected:  // Cambiar a protected para que las clases hijas accedan
@@ -14,6 +14,13 @@ protected:  // Cambiar a protected para que las clases hijas accedan
     sf::Clock animationClock;
     bool estaVivo = true;
     bool estaCayendo = false;
+    bool estaMoviendose = false;  // Nueva: indica si está en transición entre casillas
+    sf::Vector2f posicionInicio;  // Nueva: posición de inicio del movimiento
+    sf::Vector2f posicionDestino; // Nueva: posición de destino del movimiento
+    sf::Clock relojMovimiento;    // Nueva: para controlar la duración del movimiento
+    float duracionMovimiento = 1.f; // Nueva: duración de la transición en segundos
+    Casilla* casillaSiguiente = nullptr; // Nueva: casilla a la que se moverá
+    
     sf::Vector2f posicionCaida;  // Posición inicial hacia donde cae
     sf::Vector2f posicionActualCaida;  // Posición durante la caída
     float velocidadCaida = 50.f;  // Píxeles por segundo
@@ -32,12 +39,13 @@ public:
     virtual ~Enemigo();
     
     // Métodos comunes
-
+    bool intentarMover(Casilla* nuevaCasilla);
     void MoverACasilla(Casilla& nuevaCasilla);
     void morir();
     bool getEstaVivo() const { return estaVivo; }
+    bool debeSerEliminado() const;  // Nueva: verifica si debe eliminarse
     void Dibujar(Pantalla &window);
-    Casilla getCasillaActual();
+    Casilla* getCasillaActual();
     
     // Método virtual puro - cada enemigo implementa su comportamiento
     virtual void actualizar(Tablero& tablero) = 0;
@@ -51,11 +59,26 @@ Enemigo::Enemigo(Casilla& casillaInicial)
   
 
 
-void Enemigo::MoverACasilla(Casilla& nuevaCasilla)
+bool Enemigo::intentarMover(Casilla* nuevaCasilla)
 {
-    casillaActual = &nuevaCasilla;
-    posicionCaida = nuevaCasilla.getPosicion();
-    cambiarAnimacion(AnimacionEstado::SALTAR);  // Activar animación de salto
+    if (nuevaCasilla == nullptr) {
+        morir();
+        return false;
+    }
+    
+    MoverACasilla(*nuevaCasilla);
+    return true;
+}
+
+void Enemigo::MoverACasilla(Casilla& nuevaCasilla)
+{   
+    // Iniciar transición animada
+    estaMoviendose = true;
+    casillaSiguiente = &nuevaCasilla;
+    posicionInicio = casillaActual->getPosicion();
+    posicionDestino = nuevaCasilla.getPosicion();
+    relojMovimiento.restart();
+    cambiarAnimacion(AnimacionEstado::SALTAR);
 }
 
 void Enemigo::Dibujar(Pantalla &window)
@@ -64,26 +87,41 @@ void Enemigo::Dibujar(Pantalla &window)
     sf::Vector2f cubePos;
 
     if (estaCayendo) {
-
         float tiempocaida = relojCaida.getElapsedTime().asSeconds();
         float desplazamiento = velocidadCaida * tiempocaida;
-
-        posicionActualCaida.x = posicionCaida.x*64.f;
+        posicionActualCaida.x = posicionCaida.x;
         posicionActualCaida.y = posicionCaida.y + desplazamiento;
-
         cubePos = posicionActualCaida;
-    }else if (casillaActual){
-
+    } else if (estaMoviendose) {
+        // Interpolar entre posición inicial y destino
+        float tiempoTranscurrido = relojMovimiento.getElapsedTime().asSeconds();
+        float progreso = tiempoTranscurrido / duracionMovimiento;
+        
+        if (progreso >= 1.0f) {
+            // Movimiento completado
+            progreso = 1.0f;
+            estaMoviendose = false;
+            casillaActual = casillaSiguiente;
+            casillaSiguiente = nullptr;
+            cambiarAnimacion(AnimacionEstado::PARADO);
+        }
+        
+        // Interpolación lineal
+        cubePos.x = posicionInicio.x + (posicionDestino.x - posicionInicio.x) * progreso;
+        cubePos.y = posicionInicio.y + (posicionDestino.y - posicionInicio.y) * progreso;
+    } else if (casillaActual) {
         cubePos = casillaActual->getPosicion();
     }
-    EnemigoSprite.setPosition(cubePos.x, cubePos.y);
-    window.draw(EnemigoSprite);
     
+    // Centrar y ajustar el sprite igual que el jugador
+    EnemigoSprite.setPosition(cubePos.x - EnemigoSprite.getGlobalBounds().width / 2.f,
+                             cubePos.y - EnemigoSprite.getGlobalBounds().height + 20.f);
+    window.draw(EnemigoSprite);
 }
 
-Casilla Enemigo::getCasillaActual()
+Casilla* Enemigo::getCasillaActual()
 {
-    return *casillaActual;
+    return casillaActual;
 }
 
 void Enemigo::cambiarAnimacion(AnimacionEstado nuevoEstado)
@@ -131,10 +169,27 @@ void Enemigo::morir()
     estaCayendo = true;
 
     if (casillaActual) {
-        posicionActualCaida = casillaActual->getPosicion();
+        posicionCaida = casillaActual->getPosicion();
+        posicionActualCaida = posicionCaida;
     }
+    
+    // Cambiar inmediatamente a animación de caer, interrumpiendo cualquier animación actual
+    estadoActual = AnimacionEstado::CAER;
+    animaciones[AnimacionEstado::CAER].reiniciar();
+    animationClock.restart();
+    
     relojCaida.restart();
-    cambiarAnimacion(AnimacionEstado::CAER);
+}
+
+bool Enemigo::debeSerEliminado() const
+{
+    // Eliminar si está cayendo y ha caído más de 500 píxeles
+    if (estaCayendo) {
+        float tiempoCaida = relojCaida.getElapsedTime().asSeconds();
+        float desplazamiento = velocidadCaida * tiempoCaida;
+        return desplazamiento > 500.f;  // Ha caído fuera de la pantalla
+    }
+    return false;
 }
 
 Enemigo::~Enemigo()

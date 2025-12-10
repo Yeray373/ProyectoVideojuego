@@ -16,13 +16,13 @@ public:
     ~Pantalla();
     bool isOpen();
     void close();
-    void clear();
+    void clear(sf::Color color);
     void display();
     bool pollEvent(sf::Event &event);
-    void draw(sf::Sprite &sprite);
-    void draw(sf::Shape &shape);
-    void draw(sf::Drawable &drawable);
-    void draw(sf::Text &text);
+    void draw(const sf::Sprite &sprite);
+    void draw(const sf::Shape &shape);
+    void draw(const sf::Drawable &drawable);
+    void draw(const sf::Text &text);
     float getFrameTime() ;
     int getCurrentFrame() ;
     int getNumFrames() ;
@@ -42,9 +42,9 @@ void Pantalla::close()
 {
     window.close();
 }
-void Pantalla::clear()
+void Pantalla::clear(sf::Color color)
 {
-    window.clear();
+    window.clear(color);
 }
 void Pantalla::display()
 {
@@ -56,22 +56,22 @@ bool Pantalla::pollEvent(sf::Event &event)
 }
 
 // Implementación de métodos draw
-void Pantalla::draw(sf::Sprite &sprite)
+void Pantalla::draw(const sf::Sprite &sprite)
 {
     window.draw(sprite);
 }
 
-void Pantalla::draw(sf::Shape &shape)
+void Pantalla::draw(const sf::Shape &shape)
 {
     window.draw(shape);
 }
 
-void Pantalla::draw(sf::Drawable &drawable)
+void Pantalla::draw(const sf::Drawable &drawable)
 {
     window.draw(drawable);
 }
 
-void Pantalla::draw(sf::Text &text)
+void Pantalla::draw(const sf::Text &text)
 {
     window.draw(text);
 }

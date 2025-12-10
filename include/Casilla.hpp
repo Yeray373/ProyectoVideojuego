@@ -33,6 +33,11 @@ public:
         }
     }
     
+    void RestaurarColor() {
+        visitada = false;
+        tapa_cubo.setFillColor(colorOriginal);
+    }
+    
     sf::Vector2f getPosicion() {
         return tapa_cubo.getPoint(0);
     }

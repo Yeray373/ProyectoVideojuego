@@ -6,7 +6,7 @@
 class Enemigo_Integral : public Enemigo {
 private:
     sf::Clock relojMovimiento;
-    float tiempoEntreMovimientos = 1.0f;  // Más rápido que el profesor
+    float tiempoEntreMovimientos = 2.0f;  // Más rápido que el profesor
     bool moviendoAbajo = true;  // Patrón: zigzag
 
 public:
@@ -17,7 +17,7 @@ public:
             EnemigoSprite.setTexture(EnemigoTexture);
             EnemigoSprite.setScale(0.8f, 0.8f);
             animaciones[AnimacionEstado::PARADO] = Animacion(24, 0, 1, 95, 212, 0.0f, true);  // 1 frame estático
-            animaciones[AnimacionEstado::SALTAR] = Animacion(24, 0, 5, 95, 212, 0.2f, false);  // 3 frames salto
+            animaciones[AnimacionEstado::SALTAR] = Animacion(24, 0, 5, 95, 212, 0.25f, false);  // 3 frames salto
             //animaciones[AnimacionEstado::CAER] = Animacion(27, 0, 3, 114, 150, 0.2f, true);  // 5 frames morir
 
     // Establecer animación inicial
@@ -26,7 +26,7 @@ public:
 
     
     void actualizar(Tablero& tablero) override {
-        if (!estaVivo || estaCayendo) return;
+        if (!estaVivo || estaCayendo || estaMoviendose) return;
         
         // Movimiento más frecuente (patrón zigzag)
         if (relojMovimiento.getElapsedTime().asSeconds() >= tiempoEntreMovimientos) {
@@ -50,10 +50,12 @@ public:
             Casilla* nuevaCasilla = tablero.getCasilla(filaDestino, colDestino);
             
             if (nuevaCasilla == nullptr) {
-                // Si no puede moverse en esa dirección, cambiar patrón
+                // Si no puede moverse, simplemente cambia dirección (no muere)
                 moviendoAbajo = !moviendoAbajo;
             } else {
-                MoverACasilla(*nuevaCasilla);
+                // Restaurar el color de la casilla destino antes de moverse
+                nuevaCasilla->RestaurarColor();
+                intentarMover(nuevaCasilla);
             }
             
             relojMovimiento.restart();

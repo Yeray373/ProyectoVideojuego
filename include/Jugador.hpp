@@ -17,6 +17,13 @@ private:
     sf::Clock animationClock;
     bool estaVivo = true;
     bool estaCayendo = false;
+    bool estaMoviendose = false;  // Nueva: indica si está en transición entre casillas
+    sf::Vector2f posicionInicio;  // Nueva: posición de inicio del movimiento
+    sf::Vector2f posicionDestino; // Nueva: posición de destino del movimiento
+    sf::Clock relojMovimiento;    // Nueva: para controlar la duración del movimiento
+    float duracionMovimiento = 0.8f; // Nueva: duración de la transición (más rápido que enemigos)
+    Casilla* casillaSiguiente = nullptr; // Nueva: casilla a la que se moverá
+    
     sf::Vector2f posicionCaida;  // Posición inicial hacia donde cae
     sf::Vector2f posicionActualCaida;  // Posición durante la caída
     float velocidadCaida = 100.f;  // Píxeles por segundo
@@ -65,9 +72,13 @@ Jugador::Jugador(Casilla& casillaInicial, const std::string& filePath)
 
 void Jugador::MoverACasilla(Casilla& nuevaCasilla)
 {
-    casillaActual = &nuevaCasilla;
-    casillaActual->CambiarColor();
-    cambiarAnimacion(AnimacionEstado::SALTAR);  // Activar animación de salto
+    // Iniciar transición animada
+    estaMoviendose = true;
+    casillaSiguiente = &nuevaCasilla;
+    posicionInicio = casillaActual->getPosicion();
+    posicionDestino = nuevaCasilla.getPosicion();
+    relojMovimiento.restart();
+    cambiarAnimacion(AnimacionEstado::SALTAR);
 }
 
 void Jugador::Dibujar(Pantalla &window)
@@ -86,6 +97,24 @@ void Jugador::Dibujar(Pantalla &window)
         posicionActualCaida.y = posicionCaida.y + desplazamientoY;
         
         cubePos = posicionActualCaida;
+    } else if (estaMoviendose) {
+        // Interpolar entre posición inicial y destino
+        float tiempoTranscurrido = relojMovimiento.getElapsedTime().asSeconds();
+        float progreso = tiempoTranscurrido / duracionMovimiento;
+        
+        if (progreso >= 1.0f) {
+            // Movimiento completado
+            progreso = 1.0f;
+            estaMoviendose = false;
+            casillaActual = casillaSiguiente;
+            casillaActual->CambiarColor();
+            casillaSiguiente = nullptr;
+            cambiarAnimacion(AnimacionEstado::PARADO);
+        }
+        
+        // Interpolación lineal
+        cubePos.x = posicionInicio.x + (posicionDestino.x - posicionInicio.x) * progreso;
+        cubePos.y = posicionInicio.y + (posicionDestino.y - posicionInicio.y) * progreso;
     } else if (casillaActual) { 
         // Usar la posición de la casilla actual
         cubePos = casillaActual->getPosicion();

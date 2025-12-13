@@ -1,15 +1,15 @@
 #pragma once
 
-// Enum para los diferentes estados de animación
+// clasificacion de estados de animación
 enum class AnimacionEstado {
-    PARADO,    // Parado/quieto
+    PARADO,    // Parado
     SALTAR,    // Saltando
     CAER,      // Cayendo
     MORIR,      // Muriendo (para enemigos)
-    DESAPARECER
+    DESAPARECER 
 };
 
-// Clase para definir y manejar cada animación
+// Clase para definir y manejar animación
 class Animacion {
 private:
     int filaSprite;
@@ -22,14 +22,14 @@ private:
     int frameActual;
 
 public:
-    // Constructor
+    
     Animacion(int fila = 0, int columna = 0, int frames = 1, int ancho = 16, 
               int alto = 16, float tiempo = 0.1f, bool loopear = true)
         : filaSprite(fila), columnaInicio(columna), numFrames(frames),
           anchoFrame(ancho), altoFrame(alto), frameTime(tiempo), 
           loop(loopear), frameActual(0) {}
     
-    // Getters
+    
     int getFilaSprite() const { return filaSprite; }
     int getColumnaInicio() const { return columnaInicio; }
     int getNumFrames() const { return numFrames; }
@@ -39,7 +39,7 @@ public:
     bool esLoop() const { return loop; }
     int getFrameActual() const { return frameActual; }
     
-    // Métodos
+    
     void reiniciar() { frameActual = 0; }
     
     void avanzarFrame() {

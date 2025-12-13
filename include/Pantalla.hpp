@@ -55,7 +55,7 @@ bool Pantalla::pollEvent(sf::Event &event)
     return window.pollEvent(event);
 }
 
-// Implementación de métodos draw
+
 void Pantalla::draw(const sf::Sprite &sprite)
 {
     window.draw(sprite);

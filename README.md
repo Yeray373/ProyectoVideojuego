@@ -7,8 +7,8 @@
 ## 🎮 Controles
 
 ### Lista los controles:
--	Flechas ↑ ↓ → ←: movimiento para seleccionar opción en pantalla de inicio y para moverte a través de la pirámide (primero las flechas de movimiento horizontal y luego las de movimiento vertical).
--	Enter: iniciar juego
+-	Flechas ↑ ↓ → ←: se mueve de manera diagonal con las flechas horizontales → baja hacia la derecha  ← baja hacia la izquierda, y con los flechas verticales  ↓ sube a la derecha ↑ sube a la izquierda;tambien para moverse dentro del menú, funcionamiento normal.
+-	Enter: iniciar juego y seleccionar opcion de menu
 -	Space: reiniciar 
 
  ## ⚙️ Mecánicas

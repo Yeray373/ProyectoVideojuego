@@ -18,7 +18,7 @@ private:
         
         for (int r = 0; r < altura; r++)
         {
-            casillas[r].reserve(r + 1);  // Reservar espacio para evitar reubicaciones
+            casillas[r].reserve(r + 1); 
             for (int c = 0; c <= r; c++)
             {
                 float x = (c * 64.f) - (r * 64.f / 2.f);

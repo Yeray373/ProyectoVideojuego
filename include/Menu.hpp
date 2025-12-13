@@ -22,7 +22,7 @@ private:
     int opcionSeleccionada;
     sf::RectangleShape fondo;
     
-    // Imagen de fondo personalizada
+    // Imagen de fondo 
     sf::Texture texturaFondo;
     sf::Sprite spriteFondo;
     bool tieneImagenFondo;
@@ -39,7 +39,7 @@ private:
 
 public:
     Menu(GestorMusica* gestor = nullptr) : opcionSeleccionada(0), ajustandoVolumen(false), volumenActual(50.f), tieneImagenFondo(false), gestorMusica(gestor) {
-        // Cargar fuente (probar múltiples rutas)
+        // Cargar fuente 
         bool fuenteCargada = false;
         
         if (fuente.loadFromFile("./assets/fonts/Supersonic Rocketship.ttf")) {
@@ -52,7 +52,7 @@ public:
             std::cout << "ERROR: No se pudo cargar ninguna fuente!" << std::endl;
         }
         
-        // Intentar cargar imagen de fondo personalizada
+        //  cargar imagen de fondo
         if (texturaFondo.loadFromFile("./assets/images/Background.png")) {
             tieneImagenFondo = true;
             spriteFondo.setTexture(texturaFondo);
@@ -65,7 +65,7 @@ public:
             spriteFondo.setPosition(0, 0);
         }
         
-        // Configurar fondo de respaldo (si no hay imagen)
+        // Configurar fondo de respaldo
         fondo.setSize(sf::Vector2f(900.f, 600.f));
         fondo.setFillColor(sf::Color(20, 20, 40, 250));
         fondo.setPosition(0, 0);
@@ -161,7 +161,7 @@ public:
     }
     
     void dibujar(Pantalla& window) {
-        // Dibujar imagen de fondo si existe, sino el fondo de color
+        // Dibujar imagen de fondo 
         if (tieneImagenFondo) {
             window.draw(spriteFondo);
         } else {

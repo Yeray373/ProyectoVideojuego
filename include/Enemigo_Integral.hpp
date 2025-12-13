@@ -8,8 +8,8 @@ private:
     sf::Clock relojMovimiento;
     float tiempoEntreMovimientos = 3.0f;  // Más rápido que el profesor
     bool moviendoAbajo = true;  // Patrón: zigzag
-    bool restauroColorEnUltimoMovimiento = false; // Nuevo: tracking de restauración
-    Casilla* casillaAnterior = nullptr; // Nueva: memoria de última casilla visitada
+    bool restauroColorEnUltimoMovimiento = false; //tracking de restauración
+    Casilla* casillaAnterior = nullptr; // memoria de última casilla visitada
     int contadorMovimientos = 0; // Contador para restaurar cada 2 movimientos
 
 public:
@@ -31,14 +31,14 @@ public:
     void actualizar(Tablero& tablero) override {
         if (!estaVivo || estaCayendo || estaMoviendose) return;
         
-        // Movimiento más frecuente (patrón zigzag)
+        // Movimiento(patrón zigzag)
         if (relojMovimiento.getElapsedTime().asSeconds() >= tiempoEntreMovimientos) {
             restauroColorEnUltimoMovimiento = false; // Reset antes del movimiento
             
             int filaActual = casillaActual->getFila();
             int colActual = casillaActual->getColumna();
             
-            // Intentar múltiples direcciones de movimiento
+            // múltiples direcciones de movimiento
             std::vector<std::pair<int, int>> direccionesPosibles;
             
             if (moviendoAbajo) {

@@ -93,7 +93,7 @@ void Enemigo::Dibujar(Pantalla &window)
         posicionActualCaida.y = posicionCaida.y + desplazamiento;
         cubePos = posicionActualCaida;
     } else if (estaMoviendose) {
-        // Interpolar entre posición inicial y destino
+        
         float tiempoTranscurrido = relojMovimiento.getElapsedTime().asSeconds();
         float progreso = tiempoTranscurrido / duracionMovimiento;
         
@@ -106,7 +106,7 @@ void Enemigo::Dibujar(Pantalla &window)
             cambiarAnimacion(AnimacionEstado::PARADO);
         }
         
-        // Interpolación lineal
+        
         cubePos.x = posicionInicio.x + (posicionDestino.x - posicionInicio.x) * progreso;
         cubePos.y = posicionInicio.y + (posicionDestino.y - posicionInicio.y) * progreso;
     } else if (casillaActual) {

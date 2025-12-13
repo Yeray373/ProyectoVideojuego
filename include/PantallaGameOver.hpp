@@ -14,7 +14,7 @@ private:
     int scoreActual;
     int scoreMaximo;
     
-    // Imagen de fondo opcional
+    // Imagen de fondo 
     sf::Texture texturaFondo;
     sf::Sprite spriteFondo;
     bool tieneImagenFondo;
@@ -29,7 +29,7 @@ public:
             fuenteCalificacion.loadFromFile("C:/Windows/Fonts/Arial.ttf");
         }
         
-        // Intentar cargar imagen de fondo
+        // cargar imagen de fondo
         if (texturaFondo.loadFromFile("./assets/images/GameOver.png")) {
             tieneImagenFondo = true;
             spriteFondo.setTexture(texturaFondo);
@@ -42,7 +42,7 @@ public:
             spriteFondo.setPosition(0, 0);
         }
         
-        // Configurar fondo de respaldo
+        
         fondo.setSize(sf::Vector2f(900.f, 600.f));
         fondo.setFillColor(sf::Color(20, 20, 20));
         fondo.setPosition(0, 0);

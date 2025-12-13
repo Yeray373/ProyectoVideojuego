@@ -17,12 +17,12 @@ private:
     sf::Clock animationClock;
     bool estaVivo = true;
     bool estaCayendo = false;
-    bool estaMoviendose = false;  // Nueva: indica si está en transición entre casillas
-    sf::Vector2f posicionInicio;  // Nueva: posición de inicio del movimiento
-    sf::Vector2f posicionDestino; // Nueva: posición de destino del movimiento
-    sf::Clock relojMovimiento;    // Nueva: para controlar la duración del movimiento
-    float duracionMovimiento = 0.8f; // Nueva: duración de la transición (más rápido que enemigos)
-    Casilla* casillaSiguiente = nullptr; // Nueva: casilla a la que se moverá
+    bool estaMoviendose = false;  // indica si está en transición entre casillas
+    sf::Vector2f posicionInicio;  // posición de inicio del movimiento
+    sf::Vector2f posicionDestino; // posición de destino del movimiento
+    sf::Clock relojMovimiento;    // controla la duración del movimiento
+    float duracionMovimiento = 0.8f; // duración de la transición (más rápido que enemigos)
+    Casilla* casillaSiguiente = nullptr; // casilla a la que se moverá
     
     sf::Vector2f posicionCaida;  // Posición inicial hacia donde cae
     sf::Vector2f posicionActualCaida;  // Posición durante la caída
@@ -33,7 +33,7 @@ private:
     AnimacionEstado estadoActual = AnimacionEstado::PARADO;
     AnimacionEstado estadoAnterior = AnimacionEstado::PARADO;
     
-    // Mapa de animaciones (defines las coordenadas de cada animación en tu spritesheet)
+    // Mapa de animaciones (define las coordenadas de cada animación en tu spritesheet)
     std::map<AnimacionEstado, Animacion> animaciones;
 
 public:
@@ -41,7 +41,7 @@ public:
     ~Jugador();
     bool intentarMover(Casilla* nuevaCasilla, int filaDestino, int colDestino);  // Retorna false si murió
     void MoverACasilla(Casilla& nuevaCasilla);
-    bool finalizarMovimiento(); // Nueva: retorna true si coloró una casilla nueva
+    bool finalizarMovimiento(); //retorna true si coloreó una casilla nueva
     void morir();
     void respawn();
     bool getEstaVivo() const { return estaVivo; }
@@ -56,12 +56,12 @@ Jugador::Jugador(Casilla& casillaInicial, const std::string& filePath)
     : casillaActual(&casillaInicial), casillaInicial(&casillaInicial)
 {
     if (!JugadorTexture.loadFromFile(filePath)) {
-        // Error loading texture
+        
     }
     JugadorSprite.setTexture(JugadorTexture);
     JugadorSprite.setScale(0.8f, 0.8f);
     
-    // Configurar las animaciones usando el constructor de Animacion
+    
     animaciones[AnimacionEstado::PARADO] = Animacion(101, 5, 1, 74, 151, 0.0f, true);  // 1 frame estático
     animaciones[AnimacionEstado::SALTAR] = Animacion(101, 6, 10, 74, 151, 0.1f, false);  // 3 frames salto
     animaciones[AnimacionEstado::CAER] = Animacion(289, 2, 5, 114, 124, 0.4f, true);    // 5 frames cayendo
@@ -100,7 +100,7 @@ void Jugador::Dibujar(Pantalla &window)
         
         cubePos = posicionActualCaida;
     } else if (estaMoviendose) {
-        // Interpolar entre posición inicial y destino
+        // mover entre posición inicial y destino
         float tiempoTranscurrido = relojMovimiento.getElapsedTime().asSeconds();
         float progreso = tiempoTranscurrido / duracionMovimiento;
         
@@ -113,7 +113,7 @@ void Jugador::Dibujar(Pantalla &window)
             cambiarAnimacion(AnimacionEstado::PARADO);
         }
         
-        // Interpolación lineal
+        // movimiento lineal
         cubePos.x = posicionInicio.x + (posicionDestino.x - posicionInicio.x) * progreso;
         cubePos.y = posicionInicio.y + (posicionDestino.y - posicionInicio.y) * progreso;
     } else if (casillaActual) { 
@@ -176,7 +176,7 @@ void Jugador::actualizarAnimacion()
 bool Jugador::intentarMover(Casilla* nuevaCasilla, int filaDestino, int colDestino)
 {
     if (nuevaCasilla == nullptr) {
-        // Calcular posición visual de caída (extrapolando desde la posición actual)
+        // Calcular posición visual de caída 
         float x = (colDestino * 64.f) - (filaDestino * 64.f / 2.f);
         float y = (filaDestino * 45.f);
         posicionCaida = sf::Vector2f(450.f + x, 80.f + y);
@@ -201,7 +201,7 @@ void Jugador::morir()
     }
     relojCaida.restart();
     cambiarAnimacion(AnimacionEstado::CAER);
-    // Puedes agregar efectos de sonido, partículas, etc.
+    
 }
 
 bool Jugador::finalizarMovimiento()

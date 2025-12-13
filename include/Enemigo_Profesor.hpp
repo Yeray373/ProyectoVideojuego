@@ -24,9 +24,9 @@ public:
     void actualizar(Tablero& tablero) override {
         if (!estaVivo || estaCayendo || estaMoviendose) return;
         
-        // Movimiento cada cierto tiempo
+        
         if (relojMovimiento.getElapsedTime().asSeconds() >= tiempoEntreMovimientos) {
-            // Obtener posición actual
+            
             int filaActual = casillaActual->getFila();
             int colActual = casillaActual->getColumna();
             

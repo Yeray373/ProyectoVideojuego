@@ -108,9 +108,9 @@ int main() {
                             jugador->respawn();
                         }
                     }
-                } else {
+                } else if (!jugador->getEstaMoviendose()) {  // Solo permitir movimiento si no está en animación
                     // Movimiento diagonal abajo-derecha (Down + Right)
-                    if (event.key.code == sf::Keyboard::Down && sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
                         int filaDestino = filaActual + 1;
                         int colDestino = columnaActual + 1;
                         Casilla* nuevaCasilla = tablero->getCasilla(filaDestino, colDestino);
@@ -123,7 +123,7 @@ int main() {
                         }
                     }
                     // Movimiento diagonal abajo-izquierda (Down + Left)
-                    else if (event.key.code == sf::Keyboard::Down && sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
                         int filaDestino = filaActual + 1;
                         int colDestino = columnaActual;
                         Casilla* nuevaCasilla = tablero->getCasilla(filaDestino, colDestino);
@@ -136,7 +136,7 @@ int main() {
                         }
                     }
                     // Movimiento diagonal arriba-derecha (Up + Right)
-                    else if (event.key.code == sf::Keyboard::Up && sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                    else if (event.key.code == sf::Keyboard::Down) {
                         int filaDestino = filaActual - 1;
                         int colDestino = columnaActual;
                         Casilla* nuevaCasilla = tablero->getCasilla(filaDestino, colDestino);
@@ -149,7 +149,7 @@ int main() {
                         }
                     }
                     // Movimiento diagonal arriba-izquierda (Up + Left)
-                    else if (event.key.code == sf::Keyboard::Up && sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                    else if (event.key.code == sf::Keyboard::Up ) {
                         int filaDestino = filaActual - 1;
                         int colDestino = columnaActual - 1;
                         Casilla* nuevaCasilla = tablero->getCasilla(filaDestino, colDestino);
@@ -273,13 +273,13 @@ int main() {
         } else if (estadoActual == EstadoJuego::DERROTA) {
             // Pantalla de derrota
             gameWindow.clear(sf::Color(20, 20, 20));
-            pantallaGameOver.configurarVictoria(false);
+            pantallaGameOver.configurarVictoria(false, gestorJuego.getScore(), gestorJuego.getScoreMaximo());
             pantallaGameOver.dibujar(gameWindow);
             gameWindow.display();
         } else if (estadoActual == EstadoJuego::VICTORIA) {
             // Pantalla de victoria
             gameWindow.clear(sf::Color(10, 40, 10));
-            pantallaGameOver.configurarVictoria(true);
+            pantallaGameOver.configurarVictoria(true, gestorJuego.getScore(), gestorJuego.getScoreMaximo());
             pantallaGameOver.dibujar(gameWindow);
             gameWindow.display();
         }

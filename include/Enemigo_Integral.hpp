@@ -10,6 +10,7 @@ private:
     bool moviendoAbajo = true;  // Patrón: zigzag
     bool restauroColorEnUltimoMovimiento = false; // Nuevo: tracking de restauración
     Casilla* casillaAnterior = nullptr; // Nueva: memoria de última casilla visitada
+    int contadorMovimientos = 0; // Contador para restaurar cada 2 movimientos
 
 public:
     Enemigo_Integral(Casilla& casillaInicial, const std::string& filePath)
@@ -60,8 +61,17 @@ public:
                 Casilla* nuevaCasilla = tablero.getCasilla(dir.first, dir.second);
                 // No volver a la casilla donde estaba antes (evitar oscilación)
                 if (nuevaCasilla != nullptr && nuevaCasilla != casillaAnterior) {
-                    // Restaurar el color de la casilla destino antes de moverse
-                    restauroColorEnUltimoMovimiento = nuevaCasilla->RestaurarColor();
+                    // Incrementar contador de movimientos
+                    contadorMovimientos++;
+                    
+                    // Solo restaurar el color cada 2 movimientos
+                    if (contadorMovimientos >= 2) {
+                        restauroColorEnUltimoMovimiento = nuevaCasilla->RestaurarColor();
+                        contadorMovimientos = 0; // Resetear contador
+                    } else {
+                        restauroColorEnUltimoMovimiento = false;
+                    }
+                    
                     casillaAnterior = casillaActual; // Guardar casilla actual antes de moverse
                     intentarMover(nuevaCasilla);
                     seMovio = true;

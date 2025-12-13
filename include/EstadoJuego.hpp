@@ -14,7 +14,7 @@ private:
 
 public:
     GestorJuego() : vidas(3), score(0), scoreMaximo(0), fuenteCargada(false) {
-        fuenteCargada = fuente.loadFromFile("C:/Windows/Fonts/Arial.ttf");
+        fuenteCargada = fuente.loadFromFile("./assets/fonts/Supersonic Rocketship.ttf");
         if (!fuenteCargada) {
             fuente.loadFromFile("./assets/fonts/arial.ttf");
         }
@@ -56,7 +56,7 @@ public:
     int getScore() const { return score; }
     int getScoreMaximo() const { return scoreMaximo; }
     bool tieneVidas() const { return vidas > 0; }
-    bool alcanzoScoreMaximo() const { return score >= scoreMaximo; }
+    bool alcanzoScoreMaximo() const { return score >= scoreMaximo - 2000; }
 
     void dibujarHUD(Pantalla& window) {
         if (!fuenteCargada) return;

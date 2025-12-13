@@ -5,11 +5,14 @@
 
 class PantallaGameOver {
 private:
-    sf::Font fuente;
+    sf::Font fuente, fuenteCalificacion;
     sf::Text textoGameOver;
+    sf::Text Calificacion;
     sf::Text textoInstrucciones;
     sf::RectangleShape fondo;
     bool esVictoria;
+    int scoreActual;
+    int scoreMaximo;
     
     // Imagen de fondo opcional
     sf::Texture texturaFondo;
@@ -17,14 +20,17 @@ private:
     bool tieneImagenFondo;
 
 public:
-    PantallaGameOver() : tieneImagenFondo(false), esVictoria(false) {
+    PantallaGameOver() : tieneImagenFondo(false), esVictoria(false), scoreActual(0), scoreMaximo(26000) {
         // Cargar fuente
         if (!fuente.loadFromFile("./assets/fonts/Supersonic Rocketship.ttf")) {
             fuente.loadFromFile("C:/Windows/Fonts/Arial.ttf");
         }
+        if (!fuenteCalificacion.loadFromFile("./assets/fonts/pixel-love.ttf")) {
+            fuenteCalificacion.loadFromFile("C:/Windows/Fonts/Arial.ttf");
+        }
         
         // Intentar cargar imagen de fondo
-        if (texturaFondo.loadFromFile("./assets/images/gameover_background.png")) {
+        if (texturaFondo.loadFromFile("./assets/images/GameOver.png")) {
             tieneImagenFondo = true;
             spriteFondo.setTexture(texturaFondo);
             
@@ -40,34 +46,44 @@ public:
         fondo.setSize(sf::Vector2f(900.f, 600.f));
         fondo.setFillColor(sf::Color(20, 20, 20));
         fondo.setPosition(0, 0);
+
+        Calificacion.setFont(fuenteCalificacion);
+        Calificacion.setCharacterSize(60);
+        Calificacion.setFillColor(sf::Color::Red);
+        Calificacion.setPosition(720.f, 110.f);
+        Calificacion.setRotation(15.f);
         
         // Configurar texto de Game Over
         textoGameOver.setFont(fuente);
-        textoGameOver.setString("GAME OVER");
-        textoGameOver.setCharacterSize(80);
+        textoGameOver.setCharacterSize(100);
         textoGameOver.setFillColor(sf::Color::Red);
-        textoGameOver.setPosition(250.f, 200.f);
+        textoGameOver.setPosition(40.f, 25.f);
         
         // Configurar instrucciones
         textoInstrucciones.setFont(fuente);
-        textoInstrucciones.setString("Presiona ENTER para volver al menu");
+        textoInstrucciones.setString("Presiona ENTER \npara volver al menu");
         textoInstrucciones.setCharacterSize(25);
         textoInstrucciones.setFillColor(sf::Color::White);
-        textoInstrucciones.setPosition(220.f, 350.f);
+        textoInstrucciones.setPosition(40.f, 250.f);
     }
     
-    void configurarVictoria(bool victoria) {
+    void configurarVictoria(bool victoria, int score = 0, int scoreMax = 26000) {
         esVictoria = victoria;
+        scoreActual = score;
+        scoreMaximo = scoreMax;
+        
         if (esVictoria) {
             textoGameOver.setString("VICTORIA!");
             textoGameOver.setFillColor(sf::Color::Green);
-            textoGameOver.setPosition(280.f, 200.f);
-            fondo.setFillColor(sf::Color(10, 40, 10));
+            Calificacion.setString("100");
+            Calificacion.setFillColor(sf::Color::Red);
         } else {
-            textoGameOver.setString("GAME OVER");
-            textoGameOver.setFillColor(sf::Color::Red);
-            textoGameOver.setPosition(250.f, 200.f);
-            fondo.setFillColor(sf::Color(20, 20, 20));
+            textoGameOver.setString("GAME \nOVER");
+            
+            // Calcular porcentaje: (scoreActual * 100) / scoreMaximo
+            int porcentaje = (scoreMaximo > 0) ? (scoreActual * 100) / scoreMaximo : 0;
+            Calificacion.setString(std::to_string(porcentaje));
+            Calificacion.setFillColor(sf::Color::Red);
         }
     }
     
@@ -81,6 +97,7 @@ public:
         
         // Dibujar textos
         window.draw(textoGameOver);
+        window.draw(Calificacion);
         window.draw(textoInstrucciones);
     }
 };

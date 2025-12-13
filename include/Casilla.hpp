@@ -80,5 +80,5 @@ Casilla::Casilla(float x, float y, int fila, int columna) : fila(fila), columna(
     izq_cubo.setPoint(1, posleft);
     izq_cubo.setPoint(2, sf::Vector2f(posleft.x, posleft.y + alto_cubo));
     izq_cubo.setPoint(3, sf::Vector2f(posdown.x, posdown.y + alto_cubo));
-    izq_cubo.setFillColor(sf::Color::Red);
+    izq_cubo.setFillColor(sf::Color::Red);//un saludo
 }

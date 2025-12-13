@@ -46,8 +46,6 @@ public:
             fuenteCargada = true;
         } else if (fuente.loadFromFile("C:/Windows/Fonts/Arial.ttf")) {
             fuenteCargada = true;
-        } else {
-            std::cout << "ERROR: No se pudo cargar ninguna fuente!" << std::endl;
         }
         
         //  cargar imagen de fondo
